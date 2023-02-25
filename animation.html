@@ -5,11 +5,14 @@
 <script src="js/aframe-ar.js"></script>
 <body style="margin: 0px; overflow: hidden;">
 
-<a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
+<a-scene 
+embedded vr-mode-ui="enabled: false;" 
+arjs="debugUIEnabled: false;"
+>
 
-    <a-assets>
+    <!-- <a-assets>
 		<img id="earth-sphere" src="images/earth-sphere.jpg" />
-	</a-assets>
+	</a-assets> -->
 
     <!-- 
     for more info, see: https://aframe.io/docs/1.0.0/components/animation.html 
@@ -17,14 +20,46 @@
     -->
     
     <a-marker type="pattern" url="data/kanji.patt">
-        <a-sphere position="0 0.5 0" 
+        <!-- <a-sphere position="0 0.5 0" 
                material="src: #earth-sphere; transparent: true; opacity: 0.95;"
                animation__rotate = "property: rotation; dur: 8000; easing: linear; dir: normal; from:0 0 0; to: 0 360 0; loop: true;">
-        </a-sphere>
+        </a-sphere> -->
     </a-marker>
     
     <a-entity camera></a-entity>
-    
 </a-scene>
+    <script>
+        const fetchdata = async () => {
+          const response = await fetch("/data.json");
+          const data = await response.json();
+          return data;
+        };
+        const converToString = (arr) => {
+          return arr.join(" ");
+        };
+        fetchdata().then((data) => {
+          const createModelLoad = (model) => {
+            let position = converToString(model.position);
+            let rotation = converToString(model.rotation);
+            let scale = converToString(model.scale);
+  
+            return `
+             <a-entity
+               position="${position}"
+               rotation="${rotation}"
+               scale="${scale}"
+               gltf-model="${model.url}"
+             ></a-entity>`;
+          };
+  
+          const marker = document.querySelector("a-marker");
+  
+          for (let i = 0; i < data.length; i++) {
+            const model = data[i];
+            const modelLoad = createModelLoad(model);
+            marker.insertAdjacentHTML("beforeend", modelLoad);
+          }
+        });
+      </script>
 </body>
 </html>
