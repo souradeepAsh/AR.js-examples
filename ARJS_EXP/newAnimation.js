@@ -2,7 +2,7 @@ import * as THREE from "https://cdn.rawgit.com/mrdoob/three.js/r117/build/three.
 import { ARButton } from "https://cdn.rawgit.com/mrdoob/three.js/r117/examples/jsm/webxr/ARButton.js";
 import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/loaders/GLTFLoader.js";
 import * as SkeletonUtils from "./SkeletonUtils.js";
-import Stats from './stats.module.js';
+import Stats from "./stats.module.js";
 
 let camera, scene, renderer;
 let clock;
@@ -12,11 +12,10 @@ let hitTestSource = null;
 let hitTestSourceRequested = false;
 let groundDetected = false;
 let horse_main, horse1, horse2, horse3;
-let action_anim;
+let action_anim = [];
 
 const mixers = [];
 let mixer1;
-
 
 // init();
 
@@ -51,9 +50,10 @@ document.body.appendChild(renderer.domElement);
 
 // For Start and Stop the AR
 document.body.appendChild(
-  ARButton.createButton( renderer, {
-	optionalFeatures: [ 'dom-overlay', 'dom-overlay-for-handheld-ar' ],
-	domOverlay: { root: document.body } } )
+  ARButton.createButton(renderer, {
+    optionalFeatures: ["dom-overlay", "dom-overlay-for-handheld-ar"],
+    domOverlay: { root: document.body },
+  })
 );
 
 camera.position.z = 5;
@@ -63,9 +63,7 @@ const loader = new GLTFLoader();
 
 let gltf = (async function () {
   try {
-    gltf = await loader.loadAsync(
-      "./Horse.glb"
-    );
+    gltf = await loader.loadAsync("./Horse.glb");
     console.log("first time", gltf);
 
     const model1 = SkeletonUtils.clone(gltf.scene);
@@ -132,6 +130,27 @@ function animate() {
 }
 animate();
 
+//Animation Play
+function Play() {
+  action_anim.forEach(function (action) {
+    action.paused = false;
+  });
+}
+
+//Animation Paused
+function Pause() {
+  // pause the animation
+  action_anim.forEach(function (action) {
+    action.paused = true;
+  });
+}
+
+const playBtn = document.getElementById("play");
+playBtn.addEventListener("click", Play);
+
+const pauseBtn = document.getElementById("pause");
+pauseBtn.addEventListener("click", Pause);
+
 function render(timestamp, frame) {
   const delta = clock.getDelta();
 
@@ -165,22 +184,7 @@ function render(timestamp, frame) {
     }
   }
 
-  
-  //Animation Play
-  function Play(){
-    action_anim.forEach(function( action ){
-      action.paused = false;
-    });
-  }
-
-  //Animation Paused
-  function Pause(){
-    action_anim.forEach(function( action ) {
-      action.paused = true;
-    });
-  }
-
-  // for (const mixer of mixers) mixer.update(delta);
+  for (const mixer of mixers) mixer.update(delta);
   // if (mixer1) { mixer1.update(delta);}
 
   renderer.render(scene, camera);
