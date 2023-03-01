@@ -11,7 +11,7 @@ let controller, reticle;
 let hitTestSource = null;
 let hitTestSourceRequested = false;
 let groundDetected = false;
-let horse_main, horse1, horse2, horse3;
+let horse=[], horse_main, horse1, horse2, horse3;
 let action_anim = [];
 
 const mixers = [];
@@ -66,29 +66,29 @@ let gltf = (async function () {
     gltf = await loader.loadAsync("./Horse.glb");
     console.log("first time", gltf);
 
-    const model1 = SkeletonUtils.clone(gltf.scene);
-    const model2 = SkeletonUtils.clone(gltf.scene);
-    const model3 = SkeletonUtils.clone(gltf.scene);
+    // const model1 = SkeletonUtils.clone(gltf.scene);
+    // const model2 = SkeletonUtils.clone(gltf.scene);
+    // const model3 = SkeletonUtils.clone(gltf.scene);
 
-    const mixer1 = new THREE.AnimationMixer(model1);
-    const mixer2 = new THREE.AnimationMixer(model2);
-    const mixer3 = new THREE.AnimationMixer(model3);
+    // const mixer1 = new THREE.AnimationMixer(model1);
+    // const mixer2 = new THREE.AnimationMixer(model2);
+    // const mixer3 = new THREE.AnimationMixer(model3);
 
-    horse1 = mixer1.clipAction(gltf.animations[0]).play();
-    horse2 = mixer2.clipAction(gltf.animations[0]).play();
-    horse3 = mixer3.clipAction(gltf.animations[0]).play();
+    // horse1 = mixer1.clipAction(gltf.animations[0]).play();
+    // horse2 = mixer2.clipAction(gltf.animations[0]).play();
+    // horse3 = mixer3.clipAction(gltf.animations[0]).play();
 
-    action_anim = [horse1, horse2, horse3];
+    // action_anim = [horse1, horse2, horse3];
 
-    model1.position.set(-2, -1, -4);
-    model1.scale.set(0.01, 0.01, 0.01);
-    model2.position.set(0, -1, -4);
-    model2.scale.set(0.01, 0.01, 0.01);
-    model3.position.set(2, -1, -4);
-    model3.scale.set(0.01, 0.01, 0.01);
+    // model1.position.set(-2, -1, -4);
+    // model1.scale.set(0.01, 0.01, 0.01);
+    // model2.position.set(0, -1, -4);
+    // model2.scale.set(0.01, 0.01, 0.01);
+    // model3.position.set(2, -1, -4);
+    // model3.scale.set(0.01, 0.01, 0.01);
 
-    scene.add(model1, model2, model3);
-    mixers.push(mixer1, mixer2, mixer3);
+    // scene.add(model1, model2, model3);
+    // mixers.push(mixer1, mixer2, mixer3);
   } catch (error) {
     console.log(error);
   }
@@ -102,7 +102,7 @@ function onSelect() {
   const cube = new THREE.Mesh(geometry, material);
   cube.position.setFromMatrixPosition(reticle.matrix);
 
-  let horse = SkeletonUtils.clone(gltf.scene);
+  horse = SkeletonUtils.clone(gltf.scene);
   horse.position.set(0, -1, -2);
   scene.add(horse);
 
@@ -152,12 +152,17 @@ playBtn.addEventListener("click", Play);
 const pauseBtn = document.getElementById("pause");
 pauseBtn.addEventListener("click", Pause);
 
+// change done
+let objectPlaced = false;
+let objectInstance = null;
+
 function render(timestamp, frame) {
   const delta = clock.getDelta();
   if (frame) {
     const referenceSpace = renderer.xr.getReferenceSpace();
     const session = renderer.xr.getSession();
-    if (hitTestSourceRequested === false) {
+    // change done
+    if (hitTestSourceRequested === false && !objectPlaced) {
       session
         .requestReferenceSpace("viewer")
         .then(function (referenceSpace) {
@@ -172,13 +177,35 @@ function render(timestamp, frame) {
       });
       hitTestSourceRequested = true;
     }
-    if (hitTestSource) {
+    //change done
+    if (hitTestSource && !objectPlaced) {
       const hitTestResults = frame.getHitTestResults(hitTestSource);
-      if (hitTestResults.length) {
+      if ( hitTestResults.length ) {
         const hit = hitTestResults[0];
+        // change done
+        const position = new THREE.Vector3();
+        position.fromArray(hit.getPose(referenceSpace).transform.position);
+        
+        // let old_horse = horse.shift();
+        // scene.removeNode(old_horse); 
+
+        // if(horse.length > 1){
+        //   let old_horse = horse.shift();
+        //   scene.removeNode(old_horse);
+        // }
+
+        //change done
+        // if (!objectPlaced) {
+        //   objectInstance = object.clone();
+        //   objectInstance.position.copy(position);
+        //   scene.add(objectInstance);
+        //   objectPlaced = false;
+        //   session.end(); // end the session to disable hit test after placing the object once
+        // }
         reticle.visible = true;
         reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
-      } else {
+      } 
+      else {
         reticle.visible = false;
       }
     }
