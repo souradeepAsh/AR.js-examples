@@ -11,8 +11,16 @@ let controller, reticle;
 let hitTestSource = null;
 let hitTestSourceRequested = false;
 let groundDetected = false;
-let horse=[], horse_main, horse1, horse2, horse3;
+let horse = [],
+  horse_main,
+  horse1,
+  horse2,
+  horse3;
 let action_anim = [];
+
+// change done
+let objectPlaced = false;
+let objectInstance = null;
 
 const mixers = [];
 let mixer1;
@@ -97,17 +105,23 @@ let gltf = (async function () {
 window.addEventListener("resize", onWindowResize);
 
 function onSelect() {
+  if (objectPlaced) return;
+
   const geometry = new THREE.BoxGeometry(1, 1, 1);
   const material = new THREE.MeshPhongMaterial({ color: 0xff0000 });
   const cube = new THREE.Mesh(geometry, material);
   cube.position.setFromMatrixPosition(reticle.matrix);
 
   horse = SkeletonUtils.clone(gltf.scene);
-  horse.position.set(0, -1, -2);
+  // horse.position.set(0, -1, -2);
+  horse.position.setFromMatrixPosition(reticle.matrix);
+  horse.scale.set(0.01, 0.01, 0.01);
   scene.add(horse);
+  objectPlaced = true;
 
   mixer1 = new THREE.AnimationMixer(horse);
   horse_main = mixer1.clipAction(gltf.animations[0]).play();
+  reticle.visible = false;
 }
 
 controller = renderer.xr.getController(0);
@@ -152,10 +166,6 @@ playBtn.addEventListener("click", Play);
 const pauseBtn = document.getElementById("pause");
 pauseBtn.addEventListener("click", Pause);
 
-// change done
-let objectPlaced = false;
-let objectInstance = null;
-
 function render(timestamp, frame) {
   const delta = clock.getDelta();
   if (frame) {
@@ -180,14 +190,14 @@ function render(timestamp, frame) {
     //change done
     if (hitTestSource && !objectPlaced) {
       const hitTestResults = frame.getHitTestResults(hitTestSource);
-      if ( hitTestResults.length ) {
+      if (hitTestResults.length) {
         const hit = hitTestResults[0];
         // change done
         const position = new THREE.Vector3();
         position.fromArray(hit.getPose(referenceSpace).transform.position);
-        
+
         // let old_horse = horse.shift();
-        // scene.removeNode(old_horse); 
+        // scene.removeNode(old_horse);
 
         // if(horse.length > 1){
         //   let old_horse = horse.shift();
@@ -204,15 +214,16 @@ function render(timestamp, frame) {
         // }
         reticle.visible = true;
         reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
-      } 
-      else {
+      } else {
         reticle.visible = false;
       }
     }
   }
 
   for (const mixer of mixers) mixer.update(delta);
-  if (mixer1) { mixer1.update(delta);}
+  if (mixer1) {
+    mixer1.update(delta);
+  }
   renderer.render(scene, camera);
 }
 // }
