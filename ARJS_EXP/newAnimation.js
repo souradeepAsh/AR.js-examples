@@ -135,14 +135,15 @@ function Play() {
   action_anim.forEach(function (action) {
     action.paused = false;
   });
+  horse_main.paused = false;
 }
 
 //Animation Paused
 function Pause() {
-  // pause the animation
   action_anim.forEach(function (action) {
     action.paused = true;
   });
+  horse_main.paused = true;
 }
 
 const playBtn = document.getElementById("play");
@@ -153,7 +154,6 @@ pauseBtn.addEventListener("click", Pause);
 
 function render(timestamp, frame) {
   const delta = clock.getDelta();
-
   if (frame) {
     const referenceSpace = renderer.xr.getReferenceSpace();
     const session = renderer.xr.getSession();
@@ -185,8 +185,7 @@ function render(timestamp, frame) {
   }
 
   for (const mixer of mixers) mixer.update(delta);
-  // if (mixer1) { mixer1.update(delta);}
-
+  if (mixer1) { mixer1.update(delta);}
   renderer.render(scene, camera);
 }
 // }
