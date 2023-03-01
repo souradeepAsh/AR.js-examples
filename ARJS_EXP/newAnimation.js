@@ -11,7 +11,7 @@ let controller, reticle;
 let hitTestSource = null;
 let hitTestSourceRequested = false;
 let groundDetected = false;
-let horse = [],
+let horse,
   horse_main,
   horse1,
   horse2,
@@ -99,6 +99,7 @@ let gltf = (async function () {
     // mixers.push(mixer1, mixer2, mixer3);
   } catch (error) {
     console.log(error);
+    alert("Error in loading the model");
   }
 })();
 
@@ -113,15 +114,15 @@ function onSelect() {
   cube.position.setFromMatrixPosition(reticle.matrix);
 
   horse = SkeletonUtils.clone(gltf.scene);
-  // horse.position.set(0, -1, -2);
-  horse.position.setFromMatrixPosition(reticle.matrix);
+  horse.position.set(0, 0, -10);
+  // horse.position.setFromMatrixPosition(reticle.matrix);
   horse.scale.set(0.01, 0.01, 0.01);
   scene.add(horse);
   objectPlaced = true;
 
   mixer1 = new THREE.AnimationMixer(horse);
   horse_main = mixer1.clipAction(gltf.animations[0]).play();
-  reticle.visible = false;
+  // reticle.visible = false;
 }
 
 controller = renderer.xr.getController(0);
@@ -172,7 +173,7 @@ function render(timestamp, frame) {
     const referenceSpace = renderer.xr.getReferenceSpace();
     const session = renderer.xr.getSession();
     // change done
-    if (hitTestSourceRequested === false && !objectPlaced) {
+    if (hitTestSourceRequested === false ) {
       session
         .requestReferenceSpace("viewer")
         .then(function (referenceSpace) {
@@ -188,7 +189,7 @@ function render(timestamp, frame) {
       hitTestSourceRequested = true;
     }
     //change done
-    if (hitTestSource && !objectPlaced) {
+    if (hitTestSource ) {
       const hitTestResults = frame.getHitTestResults(hitTestSource);
       if (hitTestResults.length) {
         const hit = hitTestResults[0];

@@ -82,7 +82,7 @@ import * as THREE from "https://cdn.rawgit.com/mrdoob/three.js/r117/build/three.
         new THREE.MeshBasicMaterial()
       );
       reticle.matrixAutoUpdate = false;
-      reticle.visible = false;
+      // reticle.visible = false;
       scene.add(reticle);
 
       function animate() {
