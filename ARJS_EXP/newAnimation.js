@@ -2,6 +2,7 @@ import * as THREE from "https://cdn.rawgit.com/mrdoob/three.js/r117/build/three.
 import { ARButton } from "https://cdn.rawgit.com/mrdoob/three.js/r117/examples/jsm/webxr/ARButton.js";
 import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/loaders/GLTFLoader.js";
 import * as SkeletonUtils from "./SkeletonUtils.js";
+import Stats from './stats.module.js';
 
 let camera, scene, renderer;
 let clock;
@@ -10,9 +11,12 @@ let controller, reticle;
 let hitTestSource = null;
 let hitTestSourceRequested = false;
 let groundDetected = false;
+let horse_main, horse1, horse2, horse3;
+let action_anim;
 
 const mixers = [];
 let mixer1;
+
 
 // init();
 
@@ -72,9 +76,11 @@ let gltf = (async function () {
     const mixer2 = new THREE.AnimationMixer(model2);
     const mixer3 = new THREE.AnimationMixer(model3);
 
-    mixer1.clipAction(gltf.animations[0]).play();
-    mixer2.clipAction(gltf.animations[0]).play();
-    mixer3.clipAction(gltf.animations[0]).play();
+    horse1 = mixer1.clipAction(gltf.animations[0]).play();
+    horse2 = mixer2.clipAction(gltf.animations[0]).play();
+    horse3 = mixer3.clipAction(gltf.animations[0]).play();
+
+    action_anim = [horse1, horse2, horse3];
 
     model1.position.set(-2, -1, -4);
     model1.scale.set(0.01, 0.01, 0.01);
@@ -103,7 +109,7 @@ function onSelect() {
   scene.add(horse);
 
   mixer1 = new THREE.AnimationMixer(horse);
-  mixer1.clipAction(gltf.animations[0]).play();
+  horse_main = mixer1.clipAction(gltf.animations[0]).play();
 }
 
 controller = renderer.xr.getController(0);
@@ -158,16 +164,27 @@ function render(timestamp, frame) {
       }
     }
   }
-  for (const mixer of mixers) mixer.update(delta);
-  if (mixer1) { mixer1.update(delta);}
+
+  
+  //Animation Play
+  function Play(){
+    action_anim.forEach(function( action ){
+      action.paused = false;
+    });
+  }
+
+  //Animation Paused
+  function Pause(){
+    action_anim.forEach(function( action ) {
+      action.paused = true;
+    });
+  }
+
+  // for (const mixer of mixers) mixer.update(delta);
+  // if (mixer1) { mixer1.update(delta);}
 
   renderer.render(scene, camera);
 }
-
-function Play(){
-  for (const mixer of mixers) mixer.update(delta);
-}
-
 // }
 
 function onWindowResize() {
