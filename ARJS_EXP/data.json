@@ -1,0 +1,11 @@
+[
+    {
+      "id": 2,
+      "name": " Horse",
+      "url": "https://raw.githubusercontent.com/mrdoob/three.js/master/examples/models/gltf/Horse.glb",
+      "type": "glb",
+      "position": [0, 0, 0],
+      "rotation": [0, 0, 0],
+      "scale": [0.1, 0.1, 0.1]
+    }
+  ]
