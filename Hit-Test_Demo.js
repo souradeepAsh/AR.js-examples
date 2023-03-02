@@ -4,7 +4,7 @@ import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.121.1/examples/
 import * as SkeletonUtils from "./SkeletonUtils.js";
 import Stats from "./stats.module.js";
 
-let camera, scene, renderer;
+let camera, scene, renderer, light;
 let clock;
 
 let controller, reticle;
@@ -39,7 +39,7 @@ scene.add(camera);
 
 clock = new THREE.Clock();
 
-const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
 light.position.set(0.5, 1, 0.25);
 scene.add(light);
 

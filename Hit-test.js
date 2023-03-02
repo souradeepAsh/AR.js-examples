@@ -37,18 +37,19 @@ renderer = new THREE.WebGLRenderer({
       renderer.xr.enabled = true;
 
       document.body.appendChild(renderer.domElement);
-      // document.body.appendChild(
-      //   ARButton.createButton(renderer, { requiredFeatures: ["hit-test"] })
-      // );
-
-      // For ui Stop AR
       document.body.appendChild(
-        ARButton.createButton(renderer, {
-          optionalFeatures: ["dom-overlay", "dom-overlay-for-handheld-ar"],
-          domOverlay: { root: document.body },
-        })
+        ARButton.createButton(renderer, { requiredFeatures: ["hit-test"] })
       );
 
+      // For ui Stop AR
+      // document.body.appendChild(
+      //   ARButton.createButton(renderer, {
+      //     optionalFeatures: ["dom-overlay", "dom-overlay-for-handheld-ar"],
+      //     domOverlay: { root: document.body },
+      //   })
+      // );
+
+      // Only for cube
       const geometry = new THREE.BoxGeometry(1, 1, 1);
       const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
       const cube = new THREE.Mesh(geometry, material);
