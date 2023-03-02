@@ -25,9 +25,9 @@ let objectInstance = null;
 const mixers = [];
 let mixer1;
 
-// init();
+const container = document.createElement( 'div' );
+document.body.appendChild( container );
 
-// function init() {
 camera = new THREE.PerspectiveCamera(
   75,
   window.innerWidth / window.innerHeight,
@@ -50,6 +50,9 @@ renderer = new THREE.WebGLRenderer({
 renderer.setPixelRatio( window.devicePixelRatio );
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.xr.enabled = true;
+
+container.appendChild( renderer.domElement );
+
 document.body.appendChild(renderer.domElement);
 
 
@@ -96,6 +99,7 @@ let gltf = (async function () {
   } catch (error) {
     console.log(error);
   }
+  createUI();
 })();
 
 window.addEventListener("resize", onWindowResize);
@@ -112,7 +116,7 @@ function onSelect() {
   horse.position.setFromMatrixPosition(reticle.matrix);
   horse.scale.set(0.01, 0.01, 0.01);
   scene.add(horse);
-  objectPlaced = true;
+  objectPlaced = false;
 
   mixer1 = new THREE.AnimationMixer(horse);
   horse_main = mixer1.clipAction(gltf.animations[0]).play();
