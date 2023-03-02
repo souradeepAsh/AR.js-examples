@@ -98,14 +98,12 @@ let gltf = (async function () {
   } catch (error) {
     console.log(error);
   }
-  createUI();
 })();
 
 window.addEventListener("resize", onWindowResize);
 
 function onSelect() {
   if (objectPlaced) return;
-
   const geometry = new THREE.BoxGeometry(1, 1, 1);
   const material = new THREE.MeshPhongMaterial({ color: 0xff0000 });
   const cube = new THREE.Mesh(geometry, material);

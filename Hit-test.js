@@ -3,25 +3,33 @@ import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.121.1/examples/
 import { ARButton } from "https://cdn.rawgit.com/mrdoob/three.js/r117/examples/jsm/webxr/ARButton.js";
 import Stats from './stats.module.js';
 import * as SkeletonUtils from "./SkeletonUtils.js";
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(
+
+let camera, scene, renderer, light;
+let controller, reticle;
+let hitTestSource = null;
+let hitTestSourceRequested = false;
+let objectPlaced = false;
+let gltfMixers = [];
+let horse, horse_main;
+let mixer;
+let clock;
+scene = new THREE.Scene();
+camera = new THREE.PerspectiveCamera(
         75,
         window.innerWidth / window.innerHeight,
         0.01,
         1000
-      );
-      let controller, reticle;
-      let hitTestSource = null;
-      let hitTestSourceRequested = false;
-      let objectPlaced = false;
-      let gltfMixers = [];
-      let horse;
+);
+scene = new THREE.Scene();
+scene.add(camera);
 
-      const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+clock = new THREE.Clock();
+
+light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
       light.position.set(0.5, 1, 0.25);
       scene.add(light);
 
-      const renderer = new THREE.WebGLRenderer({
+renderer = new THREE.WebGLRenderer({
         antialias: true,
         alpha: true,
       });
@@ -41,16 +49,10 @@ import * as SkeletonUtils from "./SkeletonUtils.js";
       camera.position.z = 5;
 
       let loader = new GLTFLoader();
-      let model = (async function () {
+      let gltf = (async function () {
         try {
-          model = await loader.loadAsync("./Horse.glb");
-          console.log("first time", model);
-            let newModel = model.scene.clone();
-            newModel.position.set(1, 1, 1);
-
-            newModel.scale.set(0.01, 0.01, 0.01);
-            scene.add(newModel);            
-          return model;
+          gltf = await loader.loadAsync("./Horse.glb");
+          console.log("first time", gltf);
         } catch (error) {
           console.log(error);
         }
@@ -63,11 +65,14 @@ import * as SkeletonUtils from "./SkeletonUtils.js";
         const cube = new THREE.Mesh(geometry, material);
         cube.position.setFromMatrixPosition(reticle.matrix);
 
-        horse = SkeletonUtils.clone(model.scene);
+        horse = SkeletonUtils.clone(gltf.scene);
         horse.position.setFromMatrixPosition(reticle.matrix);
         horse.scale.set(0.01, 0.01, 0.01);
         scene.add(horse);
         objectPlaced = false;
+
+        mixer = new THREE.AnimationMixer(horse);
+        horse_main = mixer.clipAction(gltf.animations[0]).play();
       }
 
       controller = renderer.xr.getController(0);
@@ -87,6 +92,7 @@ import * as SkeletonUtils from "./SkeletonUtils.js";
       }
 
       function render(timestamp, frame) {
+        const delta = clock.getDelta();
         if (frame) {
           const referenceSpace = renderer.xr.getReferenceSpace();
           const session = renderer.xr.getSession();
@@ -105,7 +111,6 @@ import * as SkeletonUtils from "./SkeletonUtils.js";
             });
             hitTestSourceRequested = true;
           }
-
           if (hitTestSource) {
             const hitTestResults = frame.getHitTestResults(hitTestSource);
             if (hitTestResults.length) {
@@ -118,6 +123,9 @@ import * as SkeletonUtils from "./SkeletonUtils.js";
               reticle.visible = false;
             }
           }
+        }
+        if (mixer) {
+          mixer.update(delta);
         }
         renderer.render(scene, camera);
       }
