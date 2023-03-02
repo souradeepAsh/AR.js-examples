@@ -121,7 +121,7 @@ function onSelect() {
 
   mixer1 = new THREE.AnimationMixer(horse);
   horse_main = mixer1.clipAction(gltf.animations[0]).play();
-  reticle.visible = true;
+  // reticle.visible = false;
 }
 
 controller = renderer.xr.getController(0);
