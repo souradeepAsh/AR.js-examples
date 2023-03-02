@@ -9,7 +9,7 @@ let controller, reticle;
 let hitTestSource = null;
 let hitTestSourceRequested = false;
 let objectPlaced = false;
-let gltfMixers = [];
+let action_anim = [];
 let horse, horse_main;
 let mixer;
 let clock;
@@ -37,10 +37,18 @@ renderer = new THREE.WebGLRenderer({
       renderer.xr.enabled = true;
 
       document.body.appendChild(renderer.domElement);
+      // document.body.appendChild(
+      //   ARButton.createButton(renderer, { requiredFeatures: ["hit-test"] })
+      // );
 
+      // For ui Stop AR
       document.body.appendChild(
-        ARButton.createButton(renderer, { requiredFeatures: ["hit-test"] })
+        ARButton.createButton(renderer, {
+          optionalFeatures: ["dom-overlay", "dom-overlay-for-handheld-ar"],
+          domOverlay: { root: document.body },
+        })
       );
+
       const geometry = new THREE.BoxGeometry(1, 1, 1);
       const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
       const cube = new THREE.Mesh(geometry, material);
@@ -129,5 +137,27 @@ renderer = new THREE.WebGLRenderer({
         }
         renderer.render(scene, camera);
       }
+
+//Animation Play
+function Play() {
+  action_anim.forEach(function (action) {
+    action.paused = false;
+  });
+  horse_main.paused = false;
+}
+
+//Animation Paused
+function Pause() {
+  action_anim.forEach(function (action) {
+    action.paused = true;
+  });
+  horse_main.paused = true;
+}
+
+const playBtn = document.getElementById("play");
+playBtn.addEventListener("click", Play);
+
+const pauseBtn = document.getElementById("pause");
+pauseBtn.addEventListener("click", Pause);
 
       animate();
