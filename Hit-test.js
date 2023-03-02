@@ -38,9 +38,6 @@ renderer = new THREE.WebGLRenderer({
 
       document.body.appendChild(renderer.domElement);
 
-      // document.body.appendChild(
-      //   ARButton.createButton(renderer, { requiredFeatures: ["hit-test"] })
-      // );
 
       // For ui Stop AR
       document.body.appendChild(
@@ -80,7 +77,7 @@ renderer = new THREE.WebGLRenderer({
         horse.position.setFromMatrixPosition(reticle.matrix);
         horse.scale.set(0.01, 0.01, 0.01);
         scene.add(horse);
-        objectPlaced = false;
+        objectPlaced = true;
 
         mixer = new THREE.AnimationMixer(horse);
         horse_main = mixer.clipAction(gltf.animations[0]).play();
