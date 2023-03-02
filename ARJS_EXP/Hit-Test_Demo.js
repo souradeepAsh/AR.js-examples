@@ -44,15 +44,15 @@ import * as THREE from "https://cdn.rawgit.com/mrdoob/three.js/r117/build/three.
           model = await loader.loadAsync("https://raw.githubusercontent.com/mrdoob/three.js/master/examples/models/gltf/Horse.glb");
           console.log("first time", model);
 
-            let model1 = model.scene.clone();
-            model1.position.set(-2, -1, -2);
-            model1.scale.set(0.01, 0.01, 0.01);
-            scene.add(model1);   
+            // let model1 = model.scene.clone();
+            // model1.position.set(-2, -1, -2);
+            // model1.scale.set(0.01, 0.01, 0.01);
+            // scene.add(model1);   
             
-            let model2 = model.scene.clone();
-            model2.position.set(2, -1, -2);
-            model2.scale.set(0.01, 0.01, 0.01);
-            scene.add(model2);
+            // let model2 = model.scene.clone();
+            // model2.position.set(2, -1, -2);
+            // model2.scale.set(0.01, 0.01, 0.01);
+            // scene.add(model2);
 
           return model;
         } catch (error) {

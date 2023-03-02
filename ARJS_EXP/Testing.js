@@ -114,8 +114,7 @@ function onSelect() {
   cube.position.setFromMatrixPosition(reticle.matrix);
 
   horse = SkeletonUtils.clone(gltf.scene);
-  horse.position.set(0, 0, -10);
-  // horse.position.setFromMatrixPosition(reticle.matrix);
+  horse.position.setFromMatrixPosition(reticle.matrix);
   horse.scale.set(0.01, 0.01, 0.01);
   scene.add(horse);
   objectPlaced = true;

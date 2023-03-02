@@ -96,6 +96,7 @@ let gltf = (async function () {
 
     // scene.add(model1, model2, model3);
     // mixers.push(mixer1, mixer2, mixer3);
+
   } catch (error) {
     console.log(error);
   }
@@ -114,11 +115,11 @@ function onSelect() {
   horse.position.setFromMatrixPosition(reticle.matrix);
   horse.scale.set(0.01, 0.01, 0.01);
   scene.add(horse);
-  objectPlaced = false;
+  objectPlaced = true;
 
   mixer1 = new THREE.AnimationMixer(horse);
   horse_main = mixer1.clipAction(gltf.animations[0]).play();
-  reticle.visible = false;
+  // reticle.visible = false;
 }
 
 controller = renderer.xr.getController(0);
@@ -195,13 +196,10 @@ function render(timestamp, frame) {
     }
   }
 
-  for (const mixer of mixers) mixer.update(delta);
-  if (mixer1) {
-    mixer1.update(delta);
-  }
+  // for (const mixer of mixers) mixer.update(delta);
+  if (mixer1) { mixer1.update(delta);}
   renderer.render(scene, camera);
 }
-// }
 
 function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
