@@ -66,7 +66,6 @@ document.body.appendChild(
 camera.position.z = 5;
 
 const loader = new GLTFLoader();
-// loader.load( 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/models/gltf/Horse.glb', function ( gltf ) {
 
 let gltf = (async function () {
   try {
