@@ -37,6 +37,7 @@ renderer = new THREE.WebGLRenderer({
       renderer.xr.enabled = true;
 
       document.body.appendChild(renderer.domElement);
+      
       document.body.appendChild(
         ARButton.createButton(renderer, { requiredFeatures: ["hit-test"] })
       );
@@ -44,6 +45,7 @@ renderer = new THREE.WebGLRenderer({
       // For ui Stop AR
       // document.body.appendChild(
       //   ARButton.createButton(renderer, {
+      //     requiredFeatures: ["hit-test"],
       //     optionalFeatures: ["dom-overlay", "dom-overlay-for-handheld-ar"],
       //     domOverlay: { root: document.body },
       //   })
