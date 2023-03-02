@@ -35,6 +35,7 @@ camera = new THREE.PerspectiveCamera(
   1000
 );
 scene = new THREE.Scene();
+scene.add(camera);
 
 clock = new THREE.Clock();
 
@@ -46,17 +47,12 @@ renderer = new THREE.WebGLRenderer({
   antialias: true,
   alpha: true,
 });
-
+renderer.setPixelRatio( window.devicePixelRatio );
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.xr.enabled = true;
 document.body.appendChild(renderer.domElement);
 
-//Only For AR Button
-// document.body.appendChild(
-//   ARButton.createButton(renderer, { requiredFeatures: ["hit-test"] })
-// );
 
-// For Start and Stop the AR
 document.body.appendChild(
   ARButton.createButton(renderer, {
     optionalFeatures: ["dom-overlay", "dom-overlay-for-handheld-ar"],
@@ -113,7 +109,6 @@ function onSelect() {
   cube.position.setFromMatrixPosition(reticle.matrix);
 
   horse = SkeletonUtils.clone(gltf.scene);
-  // horse.position.set(0, -1, -2);
   horse.position.setFromMatrixPosition(reticle.matrix);
   horse.scale.set(0.01, 0.01, 0.01);
   scene.add(horse);
@@ -139,8 +134,6 @@ scene.add(reticle);
 
 function animate() {
   renderer.setAnimationLoop(render);
-  //   requestAnimationFrame(animate);
-  //   render();
 }
 animate();
 
@@ -171,7 +164,6 @@ function render(timestamp, frame) {
   if (frame) {
     const referenceSpace = renderer.xr.getReferenceSpace();
     const session = renderer.xr.getSession();
-    // change done
     if (hitTestSourceRequested === false && !objectPlaced) {
       session
         .requestReferenceSpace("viewer")
@@ -187,31 +179,12 @@ function render(timestamp, frame) {
       });
       hitTestSourceRequested = true;
     }
-    //change done
     if (hitTestSource && !objectPlaced) {
       const hitTestResults = frame.getHitTestResults(hitTestSource);
       if (hitTestResults.length) {
         const hit = hitTestResults[0];
-        // change done
         const position = new THREE.Vector3();
         position.fromArray(hit.getPose(referenceSpace).transform.position);
-
-        // let old_horse = horse.shift();
-        // scene.removeNode(old_horse);
-
-        // if(horse.length > 1){
-        //   let old_horse = horse.shift();
-        //   scene.removeNode(old_horse);
-        // }
-
-        //change done
-        // if (!objectPlaced) {
-        //   objectInstance = object.clone();
-        //   objectInstance.position.copy(position);
-        //   scene.add(objectInstance);
-        //   objectPlaced = false;
-        //   session.end(); // end the session to disable hit test after placing the object once
-        // }
         reticle.visible = true;
         reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
       } else {
