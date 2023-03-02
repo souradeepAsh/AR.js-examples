@@ -43,7 +43,7 @@ import * as SkeletonUtils from "./SkeletonUtils.js";
       let loader = new GLTFLoader();
       let model = (async function () {
         try {
-          model = await loader.loadAsync("https://raw.githubusercontent.com/mrdoob/three.js/master/examples/models/gltf/Horse.glb");
+          model = await loader.loadAsync("./Horse.glb");
           console.log("first time", model);
             let newModel = model.scene.clone();
             newModel.position.set(1, 1, 1);
