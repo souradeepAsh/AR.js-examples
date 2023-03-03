@@ -28,14 +28,15 @@ let mixer1;
 const container = document.createElement( 'div' );
 document.body.appendChild( container );
 
+scene = new THREE.Scene();
+
 camera = new THREE.PerspectiveCamera(
   75,
   window.innerWidth / window.innerHeight,
   0.01,
   1000
 );
-scene = new THREE.Scene();
-scene.add(camera);
+// scene.add(camera);
 
 clock = new THREE.Clock();
 
@@ -50,7 +51,6 @@ renderer = new THREE.WebGLRenderer({
 renderer.setPixelRatio( window.devicePixelRatio );
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.xr.enabled = true;
-
 container.appendChild( renderer.domElement );
 
 document.body.appendChild(renderer.domElement);
@@ -59,7 +59,7 @@ document.body.appendChild(renderer.domElement);
 document.body.appendChild(
   ARButton.createButton(renderer, {
     requiredFeatures: ["hit-test"],
-    optionalFeatures: ["dom-overlay", "dom-overlay-for-handheld-ar"],
+    optionalFeatures: ["dom-overlay"], // , "dom-overlay-for-handheld-ar"
     domOverlay: { root: document.body },
   })
 );
@@ -67,7 +67,6 @@ document.body.appendChild(
 camera.position.z = 5;
 
 const loader = new GLTFLoader();
-
 let gltf = (async function () {
   try {
     gltf = await loader.loadAsync("./Horse.glb");
@@ -161,6 +160,7 @@ playBtn.addEventListener("click", Play);
 
 const pauseBtn = document.getElementById("pause");
 pauseBtn.addEventListener("click", Pause);
+
 
 function render(timestamp, frame) {
   const delta = clock.getDelta();
