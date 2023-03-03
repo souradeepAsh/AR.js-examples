@@ -7,7 +7,7 @@ import Stats from "./stats.module.js";
 let camera, scene, renderer, light;
 let clock;
 
-let controller, reticle;
+let controller, reticle, container;
 let hitTestSource = null;
 let hitTestSourceRequested = false;
 let groundDetected = false;
@@ -25,7 +25,7 @@ let objectInstance = null;
 const mixers = [];
 let mixer1;
 
-const container = document.createElement( 'div' );
+container = document.createElement( 'div' );
 document.body.appendChild( container );
 
 scene = new THREE.Scene();
