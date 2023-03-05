@@ -1,9 +1,9 @@
 import * as THREE from 'https://cdn.rawgit.com/mrdoob/three.js/r117/build/three.module.js';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/loaders/GLTFLoader.js';
-import { RGBELoader } from '../../libs/three125/RGBELoader.js';
-import { ARButton } from '../../libs/ARButton.js';
-import { LoadingBar } from '../../libs/LoadingBar.js';
-import { Player } from '../../libs/Player.js';
+import { RGBELoader } from './libs/three125/RGBELoader.js';
+import { ARButton } from './libs/ARButton.js';
+import { LoadingBar } from './libs/LoadingBar.js';
+import { Player } from './libs/Player.js';
 
 class App{
 	constructor(){
