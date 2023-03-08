@@ -1,150 +1,74 @@
-import * as THREE from "https://cdn.rawgit.com/mrdoob/three.js/r117/build/three.module.js";
-import { ARButton } from "https://cdn.rawgit.com/mrdoob/three.js/r117/examples/jsm/webxr/ARButton.js";
-import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/loaders/GLTFLoader.js";
-import * as SkeletonUtils from "./SkeletonUtils.js";
-import Stats from "./stats.module.js";
+import * as THREE from "https://cdn.skypack.dev/-/three@v0.150.0-OzKE9j8uVtfQ1iuz7xon/dist=es2019,mode=raw/build/three.module.js";
+import { ARButton } from "https://cdn.skypack.dev/-/three@v0.150.0-OzKE9j8uVtfQ1iuz7xon/dist=es2019,mode=raw/examples/jsm/webxr/ARButton.js";
 
-let container;
-			let camera, scene, renderer;
-			let controller;
+let scene, camera, renderer, playBtn;
+var material, shape, extrudeSettings, geometry, mesh, ambientLight, pointLight1;
 
-			let reticle;
+scene = new THREE.Scene();
 
-			let hitTestSource = null;
-			let hitTestSourceRequested = false;
+camera = new THREE.PerspectiveCamera(
+75,
+window.innerWidth / window.innerHeight,
+0.1,
+1000);
 
-			init();
-			animate();
+renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
-			function init() {
+material = new THREE.MeshPhongMaterial({
+  color: 0x16c12a,
+  shininess: 70
+});
 
-				container = document.createElement( 'div' );
-				document.body.appendChild( container );
+shape = new THREE.Shape();
+shape.moveTo(0, 0);
+shape.lineTo(2, 3);
+shape.lineTo(4, 0);
+shape.lineTo(0, 0);
 
-				scene = new THREE.Scene();
+extrudeSettings = {
+  steps: 5,
+  depth: 1,
+  bevelEnabled: true,
+  bevelThickness: 0.8,
+  bevelSize: 0.5,
+  bevelOffset: 0,
+  bevelSegments: 1 
+};
 
-				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 20 );
+geometry = new THREE.ExtrudeBufferGeometry(shape, extrudeSettings);
+geometry.center();
 
-				const light = new THREE.HemisphereLight( 0xffffff, 0xbbbbff, 1 );
-				light.position.set( 0.5, 1, 0.25 );
-				scene.add( light );
+mesh = new THREE.Mesh(geometry, material);
+mesh.position.x = 0;
+mesh.position.y = 0;
+mesh.position.z = -8;
+mesh.scale.set(1.5, 1.5, 1.5);
+scene.add(mesh);
 
-				//
+camera.position.z = 10;
 
-				renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
-				renderer.setPixelRatio( window.devicePixelRatio );
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				renderer.xr.enabled = true;
-				container.appendChild( renderer.domElement );
+ambientLight = new THREE.AmbientLight(0xffffff, 0.55);
+scene.add(ambientLight);
 
-				//
+pointLight1 = new THREE.PointLight(0xf9eac8, 1, 100);
+pointLight1.position.set(5, 10, 0);
+pointLight1.castShadow = true;
+pointLight1.shadow.camera.top = 20;
+scene.add(pointLight1);
 
-				document.body.appendChild( ARButton.createButton( renderer, { requiredFeatures: [ 'hit-test' ] } ) );
+function render() {
+  requestAnimationFrame(render);
+  renderer.render(scene, camera);
+}
+render();
 
-				//
+function Play() {
+	gsap.to(mesh.position, { x: 30, y:0, z:0, duration: 4 });
+}
 
-				const geometry = new THREE.CylinderGeometry( 0.1, 0.1, 0.2, 32 ).translate( 0, 0.1, 0 );
+playBtn = document.getElementById("play");
+playBtn.addEventListener("click", Play);
 
-				function onSelect() {
-
-					if ( reticle.visible ) {
-
-						const material = new THREE.MeshPhongMaterial( { color: 0xffffff * Math.random() } );
-						const mesh = new THREE.Mesh( geometry, material );
-						reticle.matrix.decompose( mesh.position, mesh.quaternion, mesh.scale );
-						mesh.scale.y = Math.random() * 2 + 1;
-						scene.add( mesh );
-
-					}
-
-				}
-
-				controller = renderer.xr.getController( 0 );
-				controller.addEventListener( 'select', onSelect );
-				scene.add( controller );
-
-				reticle = new THREE.Mesh(
-					new THREE.RingGeometry( 0.15, 0.2, 32 ).rotateX( - Math.PI / 2 ),
-					new THREE.MeshBasicMaterial()
-				);
-				reticle.matrixAutoUpdate = false;
-				reticle.visible = false;
-				scene.add( reticle );
-
-				//
-
-				window.addEventListener( 'resize', onWindowResize );
-
-			}
-
-			function onWindowResize() {
-
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
-
-				renderer.setSize( window.innerWidth, window.innerHeight );
-
-			}
-
-			//
-
-			function animate() {
-
-				renderer.setAnimationLoop( render );
-
-			}
-
-			function render( timestamp, frame ) {
-
-				if ( frame ) {
-
-					const referenceSpace = renderer.xr.getReferenceSpace();
-					const session = renderer.xr.getSession();
-
-					if ( hitTestSourceRequested === false ) {
-
-						session.requestReferenceSpace( 'viewer' ).then( function ( referenceSpace ) {
-
-							session.requestHitTestSource( { space: referenceSpace } ).then( function ( source ) {
-
-								hitTestSource = source;
-
-							} );
-
-						} );
-
-						session.addEventListener( 'end', function () {
-
-							hitTestSourceRequested = false;
-							hitTestSource = null;
-
-						} );
-
-						hitTestSourceRequested = true;
-
-					}
-
-					if ( hitTestSource ) {
-
-						const hitTestResults = frame.getHitTestResults( hitTestSource );
-
-						if ( hitTestResults.length ) {
-
-							const hit = hitTestResults[ 0 ];
-
-							reticle.visible = true;
-							reticle.matrix.fromArray( hit.getPose( referenceSpace ).transform.matrix );
-
-						} else {
-
-							reticle.visible = false;
-
-						}
-
-					}
-
-				}
-
-				renderer.render( scene, camera );
-
-			}
+// gsap.to(mesh.position, { x: 30, y:0, z:0, duration: 4 });

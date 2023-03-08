@@ -1,109 +1,38 @@
+@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400");
+@import url("https://fonts.googleapis.com/css?family=VT323");
+@font-face {
+  font-family: "hyliaSerif";
+  src: url("fonts/HyliaSerifBeta-Regular.otf");
+}
+
+html,
 body {
-	margin: 0;
-	background-color: #f0f0f0;
-	color: #444;
-	font-family: Monospace;
-	font-size: 13px;
-	line-height: 24px;
-	overscroll-behavior: none;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  z-index: 0;
 }
-
-a {
-	color: #08f;
-	text-decoration: none;
+body {
+  margin: 0;
+  overflow: hidden;
 }
-
-a:hover {
-	text-decoration: underline;
+canvas {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
 }
-
-button {
-	cursor: pointer;
-	text-transform: uppercase;
+#play {
+  position: absolute;
+  top: 5vh;
+  left: 44vw;
+  background-color: rgb(32, 32, 32);
+  color: #00ff22;
+  font-family: "VT323", monospace;
+  font-size: 35px;
+  z-index: 10;
 }
-
-/* .......................Play Button..................... */
-button {
-	font-size: 17px;
-	padding: 0.5em 2em;
-	border: transparent;
-	box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
-	background: dodgerblue;
-	color: white;
-	border-radius: 4px;
-   }
-   button:hover {
-	background: rgb(2,0,36);
-	background: linear-gradient(90deg, rgba(30,144,255,1) 0%, rgba(0,212,255,1) 100%);
-   }
-   button:active {
-	transform: translate(0em, 0.2em);
-   }
-
-#info {
-	position: absolute;
-	top: 0px;
-	width: 100%;
-	padding: 10px;
-	box-sizing: border-box;
-	text-align: center;
-	-moz-user-select: none;
-	-webkit-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-	pointer-events: none;
-	z-index: 1; /* TODO Solve this in HTML */
-}
-
-a, button, input, select {
-	pointer-events: auto;
-}
-
-.lil-gui {
-	z-index: 2 !important; /* TODO Solve this in HTML */
-}
-
-@media all and ( max-width: 640px ) {
-	.lil-gui.root { 
-		right: auto;
-		top: auto;
-		max-height: 50%;
-		max-width: 80%;
-		bottom: 0;
-		left: 0;
-	}
-}
-
-#overlay {
-	position: absolute;
-	font-size: 16px;
-	z-index: 2;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
-	background: rgba(0,0,0,0.7);
-}
-
-	#overlay button {
-		background: transparent;
-		border: 0;
-		border: 1px solid rgb(255, 255, 255);
-		border-radius: 4px;
-		color: #ffffff;
-		padding: 12px 18px;
-		text-transform: uppercase;
-		cursor: pointer;
-	}
-
-#notSupported {
-	width: 50%;
-	margin: auto;
-	background-color: #f00;
-	margin-top: 20px;
-	padding: 10px;
+#play {
+  animation: glowing 1300ms infinite;
 }
