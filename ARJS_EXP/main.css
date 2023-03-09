@@ -49,3 +49,37 @@ canvas {
 #pause {
   animation: glowing 1300ms infinite;
 }
+
+#x-input {
+  position: absolute;
+  width: 5%;
+  top: 15vh;
+  left: 55vw;
+  background-color: rgb(255, 255, 255);
+  color: #000000;
+  font-family: "VT323", monospace;
+  font-size: 15px;
+  z-index: 10;
+}
+#y-input {
+  position: absolute;
+  width: 5%;
+  top: 20vh;
+  left: 55vw;
+  background-color: rgb(255, 255, 255);
+  color: #000000;
+  font-family: "VT323", monospace;
+  font-size: 15px;
+  z-index: 10;
+}
+#z-input {
+  position: absolute;
+  width: 5%;
+  top: 25vh;
+  left: 55vw;
+  background-color: rgb(255, 255, 255);
+  color: #000000;
+  font-family: "VT323", monospace;
+  font-size: 15px;
+  z-index: 10;
+}
