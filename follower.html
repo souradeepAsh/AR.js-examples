@@ -1,3 +1,13 @@
+<!-- 
+    This is an HTML file containing an A-Frame scene with AR capabilities using the AR.js library. 
+    The scene is embedded in the webpage using the "embedded" attribute of the a-scene element.
+    The scene contains an a-marker element with the "kanji.patt" pattern, which will trigger events when it is found or lost by the AR system. 
+    The marker element has a component called "registerevents", which is responsible for registering event listeners and handling the markerFound and markerLost events.
+    There is an a-entity with id "follower" which will move towards the marker and align its position and rotation with the marker when it is found. 
+    The a-plane child entity of "follower" with id "followerPlane" will turn green when the marker is visible and red when it is not. 
+    The a-plane has a border texture, set with the "src" attribute of its material component, and it is positioned flat on the ground with a rotation of -90 degrees on the X-axis.
+    Finally, there is an a-entity with the camera component which provides a view of the AR scene from the user's perspective.
+ -->
 <!doctype HTML>
 <html>
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">

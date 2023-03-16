@@ -1,3 +1,14 @@
+/* 
+This is a JavaScript code that creates a WebXR augmented reality (AR) experience using the three.js library.
+The code initializes a scene, camera, and renderer, and adds a hemispherical light to the scene. 
+It also sets up an event listener for window resize and defines functions to handle user input through a controller, including placing a 3D object in the scene, 
+pausing and playing animations, and detecting when the user taps on the ground.
+The code also loads a 3D model of a horse using the GLTFLoader and sets up an animation mixer to play animations on the horse. 
+When the user taps on the ground, a new instance of the horse model is created and placed at the tapped location.
+The ARButton from the three.js library is used to enable AR mode, and the code sets up a reticle to indicate the position of the user's tap.
+Overall, this code creates an AR experience where the user can tap on the ground to place a horse model and interact with it by playing or pausing animations.
+*/
+
 import * as THREE from "https://cdn.rawgit.com/mrdoob/three.js/r117/build/three.module.js";
 import { ARButton } from "https://cdn.rawgit.com/mrdoob/three.js/r117/examples/jsm/webxr/ARButton.js";
 import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/loaders/GLTFLoader.js";
@@ -72,6 +83,7 @@ let gltf = (async function () {
     gltf = await loader.loadAsync("./Horse.glb");
     console.log("first time", gltf);
 
+    // Check the multiple model load or not and also checking animation is working or not in the 3D web.
     // const model1 = SkeletonUtils.clone(gltf.scene);
     // const model2 = SkeletonUtils.clone(gltf.scene);
     // const model3 = SkeletonUtils.clone(gltf.scene);
@@ -182,6 +194,7 @@ function render(timestamp, frame) {
       });
       hitTestSourceRequested = true;
     }
+    // If Object place once then it will disable the reticle and you can't place another object on the  plane as reticle is disable in 3D scene.
     if (hitTestSource && !objectPlaced) {
       const hitTestResults = frame.getHitTestResults(hitTestSource);
       if (hitTestResults.length) {

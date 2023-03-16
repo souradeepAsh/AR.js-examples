@@ -27,7 +27,15 @@
       <a-entity camera></a-entity>
     </a-scene>
     <script>
-      const fetchdata = async () => {
+/*       
+    First, a function named fetchdata is defined using the async keyword, which is used to fetch the data from the JSON file. 
+    The await keyword is used to wait for the response from the server.
+    Next, a function named converToString is defined, which takes an array as its argument and returns a string by joining the elements of the array with a space character.
+    The fetchdata function is called, and the retrieved data is passed as an argument to the .then() method. This method is used to handle the response returned by the fetchdata function.
+    Inside the .then() method, another function named createModelLoad is defined, which takes a single object (representing a 3D model) as its argument. This function converts the position, rotation, and scale properties of the object into a string format and uses them to create an HTML element for the 3D model using the a-entity tag.
+    The marker variable is used to select the HTML element with the a-marker tag, and the insertAdjacentHTML method is used to insert the HTML element for each 3D model into the marker element.
+*/      
+const fetchdata = async () => {
         const response = await fetch("/data.json");
         const data = await response.json();
         return data;

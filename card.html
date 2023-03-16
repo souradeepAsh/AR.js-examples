@@ -1,3 +1,13 @@
+<!-- 
+This is an HTML file that creates an AR scene using the A-Frame library and AR.js.
+The scene consists of a marker with the pattern "LS.patt" and an entity with the ID "follower". When the marker is detected, 
+the "follower" entity moves towards it (lerps) and turns green. When the marker is lost, the entity turns red.
+The marker is registered with an A-Frame component called "registerevents", which listens for the "markerFound" and "markerLost" events. 
+When the marker is found for the first time, the "follower" entity is made visible and aligned with the marker's position and rotation.
+The "follower" entity is a plane with a grid texture ("border.png") that is transparent and double-sided. 
+The texture is initially not visible ("visible:false"), and becomes visible when the marker is detected. 
+-->
+
 <!DOCTYPE HTML>
 <html>
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">

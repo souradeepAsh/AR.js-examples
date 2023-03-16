@@ -1,3 +1,16 @@
+/* 
+This code is an example of using Three.js and WebXR to create an augmented reality (AR) application. 
+The code creates a scene with a camera, lighting, and a 3D object that can be placed on a real-world surface using hit testing. 
+The user can then control the position of the object using buttons or gestures.
+The code starts by importing the necessary modules from Three.js, including the ARButton module for enabling WebXR support. It then sets up the scene, camera, renderer, and lighting. 
+The code creates a 3D object using a shape and extrusion settings, but the object is not added to the scene yet.
+Next, the code sets up event listeners for the controller and reticle, which are used to detect when the user selects a point in the real world where the 3D object should be placed. 
+When the user selects a point, the code creates a new instance of the 3D object, sets its position and scale, and adds it to the scene.
+The code also uses GSAP to animate the position of the object when the user clicks the play and pause buttons.
+Finally, the code sets up a render loop to continuously render the scene and updates the position of the reticle to follow the user's controller in the real world. 
+The code also uses hit testing to detect when the user taps a surface, which triggers the placement of the 3D object.
+*/
+
 import * as THREE from "https://cdn.skypack.dev/-/three@v0.150.0-OzKE9j8uVtfQ1iuz7xon/dist=es2019,mode=raw/build/three.module.js";
 import { ARButton } from "https://cdn.skypack.dev/-/three@v0.150.0-OzKE9j8uVtfQ1iuz7xon/dist=es2019,mode=raw/examples/jsm/webxr/ARButton.js";
 
@@ -93,6 +106,7 @@ function onSelect(){
       color: 0x16c12a,
       shininess: 70
     });
+    // Define the mesh of the object and position.
     mesh = new THREE.Mesh(geometry, material);
     mesh.position.x = 0;
     mesh.position.y = 0;
@@ -127,6 +141,7 @@ animate();
 //   renderer.render(scene, camera);
 // }
 
+// This is a GSAP animation that moves a three-dimensional mesh object to a new position at coordinates x=0, y=0, z=-8 over a duration of 4 seconds.
 function Play() {
   const x = Number(document.getElementById('x-input').value);
   const y = Number(document.getElementById('y-input').value);

@@ -46,20 +46,20 @@ renderer.xr.enabled = true;
 
 document.body.appendChild(renderer.domElement);
 
-document.body.appendChild(
-  ARButton.createButton(renderer, {
-    requiredFeatures: ["hit-test"],
-    optionalFeatures: ["dom-overlay"], // , "dom-overlay-for-handheld-ar"
-    domOverlay: { root: document.body },
-  })
-);
+// document.body.appendChild(
+//   ARButton.createButton(renderer, {
+//     requiredFeatures: ["hit-test"],
+//     optionalFeatures: ["dom-overlay"], // , "dom-overlay-for-handheld-ar"
+//     domOverlay: { root: document.body },
+//   })
+// );
 
 camera.position.z = 10;
 
-// material =new THREE.MeshPhongMaterial({
-//   color: 0x16c12a,
-//   shininess: 70
-// });
+material =new THREE.MeshPhongMaterial({
+  color: 0x16c12a,
+  shininess: 70
+});
 
 shape = new THREE.Shape();
 shape.moveTo(0, 0);
@@ -78,54 +78,60 @@ extrudeSettings = {
 };
 
 geometry = new THREE.ExtrudeBufferGeometry(shape, extrudeSettings);
-// geometry.center();
+// geometry = new THREE.BoxGeometry(1, 1, 1);
+geometry.center();
 
-// mesh = new THREE.Mesh(geometry, material);
-// mesh.position.x = 0;
-// mesh.position.y = 0;
-// mesh.position.z = -8;
-// mesh.scale.set(1.5, 1.5, 1.5);
-// scene.add(mesh);
+mesh = new THREE.Mesh(geometry, material);
+mesh.position.x = 0;
+mesh.position.y = 0;
+mesh.position.z = -8;
+mesh.scale.set(1.5, 1.5, 1.5);
+scene.add(mesh);
 
-function onSelect(){
-  if ( objectPlaced ) return;
-    material =new THREE.MeshPhongMaterial({
-      color: 0x16c12a,
-      shininess: 70
-    });
-    mesh = new THREE.Mesh(geometry, material);
-    mesh.position.x = 0;
-    mesh.position.y = 0;
-    mesh.position.z = 0;
-    mesh.scale.set(0.4, 0.4, 0.4);
-    scene.add(mesh);
-    reticle.matrix.decompose( mesh.position, mesh.quaternion, mesh.scale );
-    mesh.scale.y = Math.random() * 2 + 1;
-    scene.add( mesh );
-    objectPlaced = true;
-}
+// var axis = new THREE.Vector3(0, 1, 0);
+// var angle = Math.PI / 2;
+// geometry.rotateOnWorldAxis(axis, angle);
 
-controller = renderer.xr.getController(0);
-controller.addEventListener("select", onSelect);
-scene.add(controller);
+// function onSelect(){
+//   if ( objectPlaced ) return;
+//     material =new THREE.MeshPhongMaterial({
+//       color: 0x16c12a,
+//       shininess: 70
+//     });
+//     // geometry.rotateOnWorldAxis(axis, angle);
+//     mesh = new THREE.Mesh(geometry, material);
+//     mesh.position.x = 0;
+//     mesh.position.y = 0;
+//     mesh.position.z = 0;
+//     mesh.scale.set(0.4, 0.4, 0.4);
+//     scene.add(mesh);
+//     reticle.matrix.decompose( mesh.position, mesh.quaternion, mesh.scale );
+//     mesh.scale.y = Math.random() * 2 + 1;
+//     scene.add( mesh );
+//     objectPlaced = true;
+// }
 
-reticle = new THREE.Mesh(
-  new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
-  new THREE.MeshBasicMaterial()
-);
-reticle.matrixAutoUpdate = false;
-reticle.visible = false;
-scene.add(reticle);
+// controller = renderer.xr.getController(0);
+// controller.addEventListener("select", onSelect);
+// scene.add(controller);
+
+// reticle = new THREE.Mesh(
+//   new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
+//   new THREE.MeshBasicMaterial()
+// );
+// reticle.matrixAutoUpdate = false;
+// reticle.visible = false;
+// scene.add(reticle);
 
 function animate() {
   renderer.setAnimationLoop(render);
 }
 animate();
 
-// function render() {
-//   requestAnimationFrame(render);
-//   renderer.render(scene, camera);
-// }
+function render() {
+  requestAnimationFrame(render);
+  renderer.render(scene, camera);
+}
 
 function Play() {
   const x = Number(document.getElementById('x-input').value);
@@ -138,46 +144,60 @@ function Play() {
 playBtn = document.getElementById("play");
 playBtn.addEventListener("click", Play);
 
-function Pause() {
-	gsap.to(mesh.position, { x: 0, y:0, z:-8, duration: 4 });
+function rotateAroundWorldAxis(object, point, axis, angle) {
+  var rotationMatrix = new THREE.Matrix4();
+  rotationMatrix.makeRotationAxis(axis.normalize(), angle);
+  rotationMatrix.multiply(object.matrix); // pre-multiply
+  geometry.matrix = rotationMatrix;
+  geometry.rotation.setFromRotationMatrix(object.matrix);
 }
 
-pauseBtn = document.getElementById("pause");
-pauseBtn.addEventListener("click", Pause);
+var point = new THREE.Vector3(0.5, 0.5 ,0.5); // center of the cube 
+var axis = new THREE.Vector3(1 ,0 ,0 ); // x-axis 
+var angle = Math.PI /2; //90 degrees 
 
-function render( timestamp, frame ) {
-  const delta = clock.getDelta();
-  if ( frame ) {
-    const referenceSpace = renderer.xr.getReferenceSpace();
-    const session = renderer.xr.getSession();
-    if (hitTestSourceRequested === false && !objectPlaced) {
-      session
-        .requestReferenceSpace("viewer")
-        .then(function (referenceSpace) {
-          return session.requestHitTestSource({ space: referenceSpace });
-        })
-        .then(function (source) {
-          hitTestSource = source;
-        });
-      session.addEventListener("end", function () {
-        hitTestSourceRequested = false;
-        hitTestSource = null;
-      });
-      hitTestSourceRequested = true;
-    }
-    if (hitTestSource && !objectPlaced) {
-      const hitTestResults = frame.getHitTestResults(hitTestSource);
-      if (hitTestResults.length) {
-        const hit = hitTestResults[0];
-        const position = new THREE.Vector3();
-        position.fromArray(hit.getPose(referenceSpace).transform.position);
-        reticle.visible = true;
-        reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
-      } else {
-        reticle.visible = false;
-      }
-    }
-  }
-  renderer.render( scene, camera );
-}
+rotateAroundWorldAxis(cube ,point ,axis ,angle ); 
+
+// function Pause() {
+// 	gsap.to(mesh.position, { x: 0, y:0, z:-8, duration: 4 });
+// }
+
+// pauseBtn = document.getElementById("pause");
+// pauseBtn.addEventListener("click", Pause);
+
+// function render( timestamp, frame ) {
+//   const delta = clock.getDelta();
+//   if ( frame ) {
+//     const referenceSpace = renderer.xr.getReferenceSpace();
+//     const session = renderer.xr.getSession();
+//     if (hitTestSourceRequested === false && !objectPlaced) {
+//       session
+//         .requestReferenceSpace("viewer")
+//         .then(function (referenceSpace) {
+//           return session.requestHitTestSource({ space: referenceSpace });
+//         })
+//         .then(function (source) {
+//           hitTestSource = source;
+//         });
+//       session.addEventListener("end", function () {
+//         hitTestSourceRequested = false;
+//         hitTestSource = null;
+//       });
+//       hitTestSourceRequested = true;
+//     }
+//     if (hitTestSource && !objectPlaced) {
+//       const hitTestResults = frame.getHitTestResults(hitTestSource);
+//       if (hitTestResults.length) {
+//         const hit = hitTestResults[0];
+//         const position = new THREE.Vector3();
+//         position.fromArray(hit.getPose(referenceSpace).transform.position);
+//         reticle.visible = true;
+//         reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
+//       } else {
+//         reticle.visible = false;
+//       }
+//     }
+//   }
+//   renderer.render( scene, camera );
+// }
 // gsap.to(mesh.position, { x: 30, y:0, z:0, duration: 4 });

@@ -1,0 +1,33 @@
+PROJECT DETAILS 
+Intro :
+
+This project folder contains extensive research on Augmented Reality using Three.js and AR.js. The primary objective of this project is to develop a user-friendly editor that enables users to upload models and create promotional AR experiences on the web.
+
+Details:
+Folder name ->
+ARJS_EXP : To facilitate testing, I have created the necessary files. You may also find some library files that I downloaded from their respective websites to address errors in the code. These include the Three.js library as well as other required libraries that were imported.
+
+assets : All the necessary image targets and model files in the GLB format are included in this folder.
+
+build : This project includes certain locally built files that were imported from Three.js to support the development process.
+
+data : I have all the PTT & dat files required for this project.
+
+dataNFT : These folder consist of iset files which one also get from that NFT -> ZPT file.
+
+fonts :
+
+images : All image , that i had used in my Project.
+
+index : include all the images.
+
+js : Aframe libray local.
+
+libs : ThreeJs library.
+
+marker : all markers.
+
+models : Tree Model.
+
+NFT-Marker_Creator-master : This tool is used to create markers that can be recognized by our AR.js library. It can be run separately to generate PTT file format from the markers.
+

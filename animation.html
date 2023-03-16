@@ -29,14 +29,40 @@ arjs="debugUIEnabled: false;"
     <a-entity camera></a-entity>
 </a-scene>
     <script>
+      /*
+      The code starts by defining an asynchronous function called fetchdata which retrieves the contents of a data.
+      json file from the server. The fetch function returns a promise that resolves to a Response object, 
+      which is then parsed using the json() method to extract the JSON data. 
+      Finally, the data is returned as the result of the fetchdata function.
+      */
         const fetchdata = async () => {
           const response = await fetch("/data.json");
           const data = await response.json();
           return data;
         };
+        /*
+        The converToString function is a helper function that 
+        takes an array as input and returns a string with the elements of the array joined together with spaces.
+        */
         const converToString = (arr) => {
           return arr.join(" ");
         };
+        /*
+        The main code block starts with the invocation of the fetchdata function. 
+        Once the data has been retrieved, a callback function is executed using the then() method of the returned promise. 
+        This callback function creates a new function called createModelLoad that takes a single model object as input and returns an A-Frame entity element with the attributes specified by the model object.
+        */
+        
+        /*
+        Inside the createModelLoad function, the position, rotation, and scale properties of the model object are converted to strings using the converToString function and inserted as attributes of the A-Frame entity element. 
+        The gltf-model attribute specifies the URL of the 3D model file to be loaded.
+        */
+
+        /*
+        After defining the createModelLoad function, the code selects the a-marker element on the page using querySelector. 
+        Then, for each model object in the data array, the createModelLoad function is called with the model object as input to generate an A-Frame entity element. 
+        This element is then inserted as a child of the a-marker element using the insertAdjacentHTML method.
+        */
         fetchdata().then((data) => {
           const createModelLoad = (model) => {
             let position = converToString(model.position);

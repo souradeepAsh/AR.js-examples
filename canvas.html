@@ -1,3 +1,22 @@
+<!-- 
+This is an HTML document that includes the A-Frame and A-Frame AR libraries, along with a custom script for updating a texture in real-time on an A-Frame entity.
+The link tag is used to define a favicon, and the script tags are used to load the necessary A-Frame and A-Frame AR libraries.
+The body tag contains a script tag that defines a custom component called canvas-texture. 
+This component updates the texture of an A-Frame entity by drawing a rectangle on a canvas element (#myCanvas) and setting that canvas as the material for the entity.
+Inside the canvas-texture component, there are two methods:
+init: This method sets up the canvas and initializes variables for the animation.
+tick: This method is called every frame and updates the position of the rectangle on the canvas, clears the canvas, and redraws the rectangle. 
+It also signals that the texture needs to be updated.
+The a-scene tag defines the scene and includes the following components:
+embedded: This component specifies that the scene should be embedded in the HTML document.
+vr-mode-ui: This component specifies that the VR mode UI should be enabled.
+arjs: This component specifies that AR should be enabled and that the debug UI should be disabled.
+Inside the a-assets tag, there is a canvas element with an ID of myCanvas. This canvas is used by the canvas-texture component to draw the rectangle.
+Inside the a-marker tag, there is an a-box element that represents the A-Frame entity. 
+This element has a position of (0, 0.5, 0) and a material that uses the #myCanvas canvas as its source. The canvas-texture component is also attached to this entity.
+Finally, there is an a-entity tag that represents the camera. This is necessary for the AR experience. 
+-->
+
 <!doctype HTML>
 <html>
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">

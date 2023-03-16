@@ -1,3 +1,14 @@
+/*
+This is a JavaScript code that sets up an augmented reality (AR) experience using the WebXR API and three.js library.
+The App class initializes the scene, renderer, camera, lighting, and environment. 
+It also loads a knight model using the GLTFLoader and sets up a Player class instance to control its animation and movement. The LoadingBar class is used to show a progress bar while loading the model.
+The setEnvironment() method sets the environment map of the scene using an HDR texture. 
+The resize() method adjusts the aspect ratio of the camera and the size of the renderer when the window is resized.
+The setupXR() method enables XR on the renderer and adds an AR button to the page. It also sets up a hit-test source to detect surfaces in the real-world environment and 
+allows the knight to be placed on them. The onSelect() function is called when the user interacts with the scene, 
+and it updates the position of the knight based on the position of the reticle (a visual indicator of the hit-test point).
+*/
+
 import * as THREE from 'https://cdn.rawgit.com/mrdoob/three.js/r117/build/three.module.js';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/loaders/GLTFLoader.js';
 import { RGBELoader } from './libs/three125/RGBELoader.js';
@@ -10,10 +21,13 @@ class App{
 		const container = document.createElement( 'div' );
 		document.body.appendChild( container );
         
+        //For run the animation
         this.clock = new THREE.Clock();
-        
+
+        // For loading the model we need these
         this.loadingBar = new LoadingBar();
 
+        // Asset path
 		this.assetsPath = './assets';
         
 		this.camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 20 );
@@ -21,6 +35,7 @@ class App{
         
 		this.scene = new THREE.Scene();
 
+        // ambient light
 		const ambient = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 2);
         ambient.position.set( 0.5, 1, 0.25 );
 		this.scene.add(ambient);
@@ -121,6 +136,7 @@ class App{
 	}		
     
     initScene(){
+        // After load the knight we have to make him follow with the reticle.
         this.loadKnight();
 
         this.reticle = new THREE.Mesh(
@@ -136,8 +152,11 @@ class App{
     setupXR(){
         this.renderer.xr.enabled = true;
         
-        const btn = new ARButton( this.renderer, { sessionInit: { 
-            requiredFeatures: [ 'hit-test' ], 
+        //ARButton in 3D scene
+        const btn = new ARButton( this.renderer, { sessionInit: {
+            // Required for Ar Hit test in mobile decides 
+            requiredFeatures: [ 'hit-test' ],
+            //Overlay on the " START AR" or you can change the color of it in css, it make's vite project crash sometimes.
             optionalFeatures: [ 'dom-overlay' ], 
             domOverlay: { root: document.body } 
         } } );
@@ -147,6 +166,8 @@ class App{
         this.hitTestSourceRequested = false;
         this.hitTestSource = null;
         
+
+        // for place the model in 3D scene
         function onSelect() {
             if (self.knight===undefined) return;
             
@@ -166,7 +187,19 @@ class App{
         
         this.scene.add( this.controller );    
     }
-    
+/* 
+    This is a JavaScript function that requests a hit test source from a WebXR session for the purpose of performing augmented reality (AR) interactions. 
+    The hit test source provides information about the real-world environment that can be used to place virtual objects in a way that appears to be anchored in the physical world.
+    The function starts by creating a reference to the this object and the XR session object using this.renderer.xr.getSession(). It then requests a reference space using session.requestReferenceSpace('viewer'). The reference space represents the user's physical location and orientation in the real world, 
+    and the 'viewer' option specifies that the user's position and orientation should be used as the reference.
+    Once the reference space is established, the function requests a hit test source using session.requestHitTestSource({ space: referenceSpace }). The hit test source provides information about the location and orientation of real-world surfaces that can be used to place virtual objects.
+    The space parameter specifies the reference space to use for the hit test source.
+    When the hit test source is obtained, it is stored in the self.hitTestSource variable using a callback function.
+    The function also sets an event listener for the end event of the XR session. This event is triggered when the session is ended, such as when the user closes the AR application or the session is interrupted.
+    When the event occurs, the function sets self.hitTestSourceRequested to false, clears the self.hitTestSource and self.referenceSpace variables.
+    Finally, the function sets this.hitTestSourceRequested to true, which indicates that a hit test source request has been made but not yet fulfilled.
+*/
+
     requestHitTestSource(){
         const self = this;
         const session = this.renderer.xr.getSession();
