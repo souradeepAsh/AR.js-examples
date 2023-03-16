@@ -108,30 +108,32 @@ renderer = new THREE.WebGLRenderer({
         renderer.setAnimationLoop(render);
       }
 
-/* This is a JavaScript function called render that takes two parameters: timestamp and frame. 
-It appears to be part of a larger codebase related to rendering graphics in a browser or web-based application, 
-possibly using a library like Three.js or A-Frame.
-The first line of the function calculates the time delta between the current frame and the previous frame using a clock object, 
-which is likely part of the rendering library. This delta value can be used to update animations or other time-dependent effects in the scene.
-The function then checks if the frame parameter is truthy 
-(i.e. not null, undefined, false, 0, etc.). If so, 
-it proceeds to perform some operations related to AR (augmented reality) or 
-VR (virtual reality) rendering using WebXR, a web-based API for creating immersive experiences.
-First, it gets the reference space for the XR session using the getReferenceSpace() method on the renderer.xr object. 
-This reference space represents the coordinate system used for rendering XR content.
-Next, it gets the XR session itself using the getSession() method on the renderer.xr object.
-If hitTestSourceRequested is false (presumably a global variable), 
-it requests a hit test source using the XR session's requestHitTestSource() method, 
-passing in the reference space. This hit test source can be used to detect 
-when the user touches or interacts with real-world objects using an XR input device (like a VR controller or AR phone).
-When the hit test source is created, it assigns it to the hitTestSource variable. 
-The function also sets up an event listener for when the XR session ends, which will reset the hitTestSourceRequested and hitTestSource variables.
-Finally, if hitTestSource is truthy, the function gets the hit test results for the current 
-frame using the getHitTestResults() method on the frame object, passing in the hit test source. 
-If there are any hit test results, it selects the first one and sets the position of a reticle object (presumably a graphical marker used to indicate 
-where the user is pointing in AR/VR space) based on the hit test result's position and orientation.
-After the XR-related code, the function updates any animations in the scene using a mixer object 
-(presumably part of a Three.js animation system), passing in the delta value calculated at the beginning of the function. */
+/* 
+  This is a JavaScript function called render that takes two parameters: timestamp and frame. 
+  It appears to be part of a larger codebase related to rendering graphics in a browser or web-based application, 
+  possibly using a library like Three.js or A-Frame.
+  The first line of the function calculates the time delta between the current frame and the previous frame using a clock object, 
+  which is likely part of the rendering library. This delta value can be used to update animations or other time-dependent effects in the scene.
+  The function then checks if the frame parameter is truthy 
+  (i.e. not null, undefined, false, 0, etc.). If so, 
+  it proceeds to perform some operations related to AR (augmented reality) or 
+  VR (virtual reality) rendering using WebXR, a web-based API for creating immersive experiences.
+  First, it gets the reference space for the XR session using the getReferenceSpace() method on the renderer.xr object. 
+  This reference space represents the coordinate system used for rendering XR content.
+  Next, it gets the XR session itself using the getSession() method on the renderer.xr object.
+  If hitTestSourceRequested is false (presumably a global variable), 
+  it requests a hit test source using the XR session's requestHitTestSource() method, 
+  passing in the reference space. This hit test source can be used to detect 
+  when the user touches or interacts with real-world objects using an XR input device (like a VR controller or AR phone).
+  When the hit test source is created, it assigns it to the hitTestSource variable. 
+  The function also sets up an event listener for when the XR session ends, which will reset the hitTestSourceRequested and hitTestSource variables.
+  Finally, if hitTestSource is truthy, the function gets the hit test results for the current 
+  frame using the getHitTestResults() method on the frame object, passing in the hit test source. 
+  If there are any hit test results, it selects the first one and sets the position of a reticle object (presumably a graphical marker used to indicate 
+  where the user is pointing in AR/VR space) based on the hit test result's position and orientation.
+  After the XR-related code, the function updates any animations in the scene using a mixer object 
+  (presumably part of a Three.js animation system), passing in the delta value calculated at the beginning of the function. 
+*/
 
 function render(timestamp, frame) {
         const delta = clock.getDelta();
