@@ -4,8 +4,8 @@
 import * as THREE from "https://cdn.rawgit.com/mrdoob/three.js/r117/build/three.module.js";
 import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/loaders/GLTFLoader.js";
 import { ARButton } from "https://cdn.rawgit.com/mrdoob/three.js/r117/examples/jsm/webxr/ARButton.js";
-import Stats from './stats.module.js';
-import * as SkeletonUtils from "./SkeletonUtils.js";
+// import Stats from './Library_Folder/stats.module.js';
+import * as SkeletonUtils from "./Library_Folder/SkeletonUtils.js";
 
 let camera, scene, renderer, light;
 let controller, reticle;
@@ -46,7 +46,7 @@ renderer = new THREE.WebGLRenderer({
       // For ui Stop AR
       document.body.appendChild(
         ARButton.createButton(renderer, {
-          requiredFeatures: ["hit-test"],
+          requiredFeatures: ["hit-test"],   // important for mobile ar hit test
           optionalFeatures: ["dom-overlay", "dom-overlay-for-handheld-ar"],
           domOverlay: { root: document.body },
         })
