@@ -5,17 +5,25 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import data from "./data.json";
+import newData from "./newData.json";
+import { animate } from "./utils";
 
 const state = {
   active: 0,
-  data: data,
+  data: newData,
   getActive() {
-    return this.data[this.active];
+    return this.data.stages[this.active];
   },
   next() {
     this.active = this.active + 1;
-    if (this.active > this.data.length - 1) {
+    if (this.active > this.data.stages.length - 1) {
       this.active = 0;
+    }
+  },
+  prev() {
+    this.active = this.active - 1;
+    if (this.active < 0) {
+      this.active = this.data.stages.length - 1;
     }
   },
 };
@@ -33,37 +41,42 @@ mouse = new THREE.Vector2();
 const light = new THREE.AmbientLight(0xffffff); // soft white light
 scene.add(light);
 
-// const geometry = new THREE.BoxGeometry(1, 1, 1);
-// const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-// const cube = new THREE.Mesh(geometry, material);
-// scene.add(cube);
-
-camera.position.z = 5;
-
-// animate(cube, "position", 1, [1, 2, 2]);
-// animate(cube, "rotation", 0.8, [0, Math.PI, 0]);
+camera.position.z = 25;
 
 const loader = new GLTFLoader();
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath("./draco/");
 loader.setDRACOLoader(dracoLoader);
 
-// chest_2  =  individual mesh(Transform fixed), chest_1 = single mesh, chest = old one
-let model = await loader.loadAsync("/chest_2.glb");
-let m1 = model.scene.clone();
-let currentActive = state.getActive();
-m1.position.set(...currentActive.position);
-m1.rotation.set(0, 0, 0);
-m1.scale.set(...currentActive.scale);
-let group;
-m1.traverse((child) => {
-  console.log(child);
-});
-scene.add(m1);
+let assests = {};
+
+const loadAllModels = async () => {
+  let models = await Promise.all(
+    newData.models.map((m) => {
+      return loader.loadAsync(m.url);
+    })
+  );
+
+  for (let i = 0; i < models.length; i++) {
+    const m = models[i];
+    let mesh = m.scene.clone();
+    assests[newData.models[i].name] = mesh;
+  }
+};
+
 let anim = [];
-ActivateAnimation();
+(async () => {
+  await loadAllModels();
+  ActivateAnimation();
+})();
+
+// ===========================================================
 document.getElementById("next").addEventListener("click", () => {
   state.next();
+  ActivateAnimation();
+});
+document.getElementById("prev").addEventListener("click", () => {
+  state.prev();
   ActivateAnimation();
 });
 
@@ -75,65 +88,25 @@ function ActivateAnimation() {
     });
   }
   anim = [];
-  anim.push(animate(m1, "position", 1, currentActive.position));
-  anim.push(animate(m1, "rotation", 1, currentActive.rotation));
-  anim.push(animate(m1, "scale", 1, currentActive.scale));
-  console.log(anim);
-}
 
-function animate(mesh, type, duration = 1, to) {
-  switch (type) {
-    case "position":
-      return gsap.to(mesh.position, {
-        duration: duration,
-        x: to[0],
-        y: to[1],
-        z: to[2],
-      });
-      break;
-    case "rotation":
-      let { axis, speed, delay, isRotation } = to;
-      if (!isRotation)
-        return gsap.to(mesh.rotation, {
-          duration: speed,
-          x: axis[0],
-          y: axis[1],
-          z: axis[2],
-        });
-      let rotation = axis.map((a) => {
-        return a * Math.PI * 2;
-      });
+  let removedChildren = [];
+  scene.children.forEach((c) => {
+    if (c.type == "Mesh" || c.type == "Group") {
+      removedChildren.push(c);
+    }
+  });
 
-      return gsap.fromTo(
-        mesh.rotation,
-        {
-          x: 0,
-          y: 0,
-          z: 0,
-        },
-        {
-          duration: speed,
-          x: rotation[0],
-          y: rotation[1],
-          z: rotation[2],
-          repeat: -1,
-          repeatDelay: delay,
-          ease: "none",
-        }
-      );
-      break;
-    case "scale":
-      return gsap.to(mesh.scale, {
-        duration: duration,
-        x: to[0],
-        y: to[1],
-        z: to[2],
-      });
-      break;
+  removedChildren.forEach((c) => {
+    scene.remove(c);
+  });
 
-    default:
-      break;
-  }
+  currentActive.models.forEach((m) => {
+    let mesh = assests[m.name];
+    anim.push(animate(mesh, "position", 1, m.position));
+    anim.push(animate(mesh, "rotation", 1, m.spin));
+    anim.push(animate(mesh, "scale", 1, m.scale));
+    scene.add(mesh);
+  });
 }
 
 // ============================================================
@@ -152,53 +125,3 @@ function render() {
   renderer.render(scene, camera);
 }
 render();
-
-// we pass to the function the child object of another object as a parameter.
-
-function onClick(event) {
-  event.preventDefault();
-
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-  raycaster.setFromCamera(mouse, camera);
-
-  var intersects = raycaster.intersectObjects(scene.children, true);
-
-  if (intersects.length > 0) {
-    console.log("Intersection:", intersects[0]);
-    unGrupsinBorrar(intersects[0].object);
-  }
-}
-function unGrupsinBorrar(ModelSelect) {
-  // we get the Id
-  var elId = ModelSelect.id;
-
-  // declare the object in a variable
-  var objetUngrup = scene.getObjectById(elId);
-
-  console.log(objetUngrup);
-
-  // we get the position
-  // var laPosicion = scene.getObjectById(elId).getWorldPosition();
-
-  // // we get the rotation
-  // var laRotacion = scene.getObjectById(elId).getWorldRotation();
-
-  // we remove the object from the scene - it is not deleted because it is declared in the variable--
-  // scene.remove(scene.getObjectById(elId));
-  // remove from the scene the object with the ID that we have passed as a parameter
-  scene.remove(ModelSelect);
-  console.log(scene);
-
-  // We add the object to the scene - it appears in the position (0,0,0) and rotation (0,0,0)
-  // scene.add(objetUngrup);
-
-  // // We recover the position
-  // objetUngrup.position.copy(laPosicion);
-
-  // // We recover the rotation
-  // objetUngrup.rotation.copy(laRotacion);
-
-  // The object is now inserted as a child of the scene, with the same ID it had
-}
