@@ -44,9 +44,11 @@ scene.add(light);
 camera.position.z = 25;
 
 const loader = new GLTFLoader();
-const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath("./draco/");
-loader.setDRACOLoader(dracoLoader);
+const draco = new DRACOLoader();
+// draco.setDecoderConfig({ type: "js" });
+// draco.setDecoderPath("https://www.gstatic.com/draco/v1/decoders/");
+draco.setDecoderPath("./draco/");
+loader.setDRACOLoader(draco);
 
 let assests = {};
 

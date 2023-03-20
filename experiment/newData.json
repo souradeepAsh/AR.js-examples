@@ -1,8 +1,8 @@
 {
   "title": "Test",
   "models": [
-    { "name": "chest", "url": "http://localhost:5173/chest.glb" },
-    { "name": "chest2", "url": "http://localhost:5173/chest.glb" }
+    { "name": "chest", "url": "/chest.glb" },
+    { "name": "chest2", "url": "/chest.glb" }
   ],
   "stages": [
     {
