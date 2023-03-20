@@ -47,7 +47,7 @@ const loader = new GLTFLoader();
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath("./draco/");
 loader.setDRACOLoader(dracoLoader);
-let model = await loader.loadAsync("/chest.glb");
+let model = await loader.loadAsync("/chest_1.glb");
 let m1 = model.scene.clone();
 let currentActive = state.getActive();
 m1.position.set(...currentActive.position);
