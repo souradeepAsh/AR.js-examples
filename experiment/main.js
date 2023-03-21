@@ -114,9 +114,14 @@ function ActivateAnimation() {
 }
 
 // ============================================================
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({
+  antialias: true,
+  alpha: true,
+});
+renderer.setPixelRatio( window.devicePixelRatio );
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+renderer.xr.enabled = true;
 
 // orbit controls
 const controls = new OrbitControls(camera, renderer.domElement);
