@@ -7,6 +7,7 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import data from "./data.json";
 import newData from "./newData.json";
 import { animate } from "./utils";
+import { ARButton } from "three/examples/jsm/webxr/ARButton.js";
 
 const state = {
   active: 0,
@@ -27,6 +28,7 @@ const state = {
     }
   },
 };
+
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -120,6 +122,14 @@ document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 // renderer.domElement.addEventListener("click", onClick, false);
+
+document.body.appendChild(
+  ARButton.createButton(renderer, {
+    requiredFeatures: ["hit-test"],    // important for mobile ar hit test
+    optionalFeatures: ["dom-overlay"], // , "dom-overlay-for-handheld-ar"
+    domOverlay: { root: document.body },
+  })
+);
 
 // render loop
 function render() {
